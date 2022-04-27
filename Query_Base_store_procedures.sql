@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [BD_Espacial]    Script Date: 26/4/2022 04:17:55 ******/
+/****** Object:  Database [BD_Espacial]    Script Date: 26/4/2022 18:55:45 ******/
 CREATE DATABASE [BD_Espacial]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -82,14 +82,14 @@ ALTER DATABASE [BD_Espacial] SET QUERY_STORE = OFF
 GO
 USE [BD_Espacial]
 GO
-/****** Object:  Table [dbo].[Calle]    Script Date: 26/4/2022 04:17:55 ******/
+/****** Object:  Table [dbo].[Calle]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Calle](
 	[idCalle] [int] IDENTITY(1,1) NOT NULL,
-	[distancia] [geography] NOT NULL,
+	[distancia] [geometry] NOT NULL,
 	[visible] [bit] NOT NULL,
  CONSTRAINT [PK_Calle] PRIMARY KEY CLUSTERED 
 (
@@ -97,7 +97,7 @@ CREATE TABLE [dbo].[Calle](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Casa]    Script Date: 26/4/2022 04:17:55 ******/
+/****** Object:  Table [dbo].[Casa]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -105,7 +105,7 @@ GO
 CREATE TABLE [dbo].[Casa](
 	[idCasa] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](10) NOT NULL,
-	[ubicacion] [geography] NOT NULL,
+	[ubicacion] [geometry] NOT NULL,
 	[idCalle] [int] NOT NULL,
 	[visible] [bit] NOT NULL,
  CONSTRAINT [PK_Casa] PRIMARY KEY CLUSTERED 
@@ -114,7 +114,7 @@ CREATE TABLE [dbo].[Casa](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Comercio]    Script Date: 26/4/2022 04:17:55 ******/
+/****** Object:  Table [dbo].[Comercio]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -123,7 +123,7 @@ CREATE TABLE [dbo].[Comercio](
 	[idComercio] [int] IDENTITY(1,1) NOT NULL,
 	[nombre] [varchar](10) NOT NULL,
 	[idTipo] [int] NOT NULL,
-	[ubicacion] [geography] NOT NULL,
+	[ubicacion] [geometry] NOT NULL,
 	[idCalle] [int] NOT NULL,
 	[visible] [bit] NOT NULL,
  CONSTRAINT [PK_Comercio] PRIMARY KEY CLUSTERED 
@@ -132,7 +132,7 @@ CREATE TABLE [dbo].[Comercio](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Producto]    Script Date: 26/4/2022 04:17:55 ******/
+/****** Object:  Table [dbo].[Producto]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -152,7 +152,7 @@ CREATE TABLE [dbo].[Producto](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoComercio]    Script Date: 26/4/2022 04:17:55 ******/
+/****** Object:  Table [dbo].[TipoComercio]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -169,7 +169,7 @@ CREATE TABLE [dbo].[TipoComercio](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoProducto]    Script Date: 26/4/2022 04:17:55 ******/
+/****** Object:  Table [dbo].[TipoProducto]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -209,32 +209,34 @@ REFERENCES [dbo].[Comercio] ([idComercio])
 GO
 ALTER TABLE [dbo].[Producto] CHECK CONSTRAINT [FK_Producto_Comercio]
 GO
-/****** Object:  StoredProcedure [dbo].[actualizar_calles]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[actualizar_calles]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-Create procedure [dbo].[actualizar_calles] @id_calle int, @p_distancia geography
+Create procedure [dbo].[actualizar_calles] @id_calle int, @p_distancia geometry
 as
 
 update Calle
 set distancia = @p_distancia
 where @id_calle = @id_calle
+
 GO
-/****** Object:  StoredProcedure [dbo].[actualizar_comercios]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[actualizar_comercios]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-Create procedure [dbo].[actualizar_comercios] @id_comercio int, @p_nombre varchar(10), @p_tipo_comercio int, @p_ubicacion geography, @p_calle int
+Create procedure [dbo].[actualizar_comercios] @id_comercio int, @p_nombre varchar(10), @p_tipo_comercio int, @p_ubicacion geometry, @p_calle int
 as
 
 update Comercio
 set nombre = @p_nombre, idTipo = @p_tipo_comercio, ubicacion = @p_ubicacion, idCalle = @p_calle
 where idComercio = @id_comercio
+
 GO
-/****** Object:  StoredProcedure [dbo].[actualizar_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[actualizar_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -247,8 +249,9 @@ update Producto
 set idComercio = @p_comercio, nombre = @p_nombre, peso = @p_peso, descripcion= @p_descripcion, 
 precio = @precio, idTipoProducto = @p_tipo_producto
 where idProducto = @id_producto
+
 GO
-/****** Object:  StoredProcedure [dbo].[actualizar_tipo_comercio]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[actualizar_tipo_comercio]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -260,8 +263,9 @@ as
 update TipoComercio
 set nombre = @p_nombre, horaabierto = @p_hora_abierto, horacerrado = @p_hora_cerrado
 where @id_tipo_comercio = idTipoComercio
+
 GO
-/****** Object:  StoredProcedure [dbo].[actualizar_tipo_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[actualizar_tipo_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -272,8 +276,9 @@ as
 update TipoProducto
 set nombre = @p_nombre
 where @id_tipo_producto = idTipoProducto
+
 GO
-/****** Object:  StoredProcedure [dbo].[eliminar_calle]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[eliminar_calle]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -284,8 +289,9 @@ as
 update Calle
 set visible = 0
 where @id_calle = idCalle
+
 GO
-/****** Object:  StoredProcedure [dbo].[eliminar_comercios]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[eliminar_comercios]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -296,8 +302,9 @@ as
 update Comercio
 set visible = 0
 where @id_comercio = idComercio
+
 GO
-/****** Object:  StoredProcedure [dbo].[eliminar_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[eliminar_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -308,8 +315,9 @@ as
 update Producto
 set visible = 0
 where @id_producto = idProducto
+
 GO
-/****** Object:  StoredProcedure [dbo].[eliminar_tipo_comercio]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[eliminar_tipo_comercio]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -320,8 +328,9 @@ as
 update TipoComercio
 set visible = 0
 where @id_tipo_comercio = idTipoComercio
+
 GO
-/****** Object:  StoredProcedure [dbo].[eliminar_tipo_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[eliminar_tipo_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -332,30 +341,33 @@ as
 update TipoProducto
 set visible = 0
 where @id_tipo_producto = idTipoProducto
+
 GO
-/****** Object:  StoredProcedure [dbo].[insertar_calles]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[insertar_calles]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-Create procedure [dbo].[insertar_calles] @p_distancia geography
+Create procedure [dbo].[insertar_calles] @p_distancia geometry
 as
 
 insert Calle(distancia, visible)
 values(@p_distancia, 1)
+
 GO
-/****** Object:  StoredProcedure [dbo].[insertar_comercios]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[insertar_comercios]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-Create procedure [dbo].[insertar_comercios] @p_nombre varchar(10), @p_tipo_comercio int, @p_ubicacion geography, @p_calle int
+Create procedure [dbo].[insertar_comercios] @p_nombre varchar(10), @p_tipo_comercio int, @p_ubicacion geometry, @p_calle int
 as
 
 insert Comercio(nombre, idTipo, ubicacion, idCalle, visible)
 values(@p_nombre, @p_tipo_comercio, @p_ubicacion, @p_calle, 1)
+
 GO
-/****** Object:  StoredProcedure [dbo].[insertar_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[insertar_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -366,8 +378,9 @@ as
 
 insert Producto(idComercio, nombre, peso, descripcion, precio, idTipoProducto, visible)
 values(@p_comercio, @p_nombre, @p_peso, @p_descripcion, @precio, @p_tipo_producto, 1)
+
 GO
-/****** Object:  StoredProcedure [dbo].[insertar_tipo_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[insertar_tipo_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -377,8 +390,9 @@ as
 
 insert TipoProducto(nombre, visible)
 values(@p_nombre, 1)
+
 GO
-/****** Object:  StoredProcedure [dbo].[insertar_tipoComercio]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[insertar_tipoComercio]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -388,8 +402,9 @@ as
 
 insert TipoComercio(nombre, horaabierto, horacerrado, visible)
 values(@p_nombre, @p_hora_abierto, @p_hora_cerrado, 1)
+
 GO
-/****** Object:  StoredProcedure [dbo].[ver_calles]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[ver_calles]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -400,8 +415,9 @@ as
 select idCalle, distancia
 from Calle
 where visible = 1;
+
 GO
-/****** Object:  StoredProcedure [dbo].[ver_comercios]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[ver_comercios]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -413,8 +429,9 @@ select C.nombre, TC.nombre, C.ubicacion, C.idCalle
 from Comercio C
 Inner Join TipoComercio TC ON C.idTipo = TC.idTipoComercio
 where C.visible = 1;
+
 GO
-/****** Object:  StoredProcedure [dbo].[ver_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[ver_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -427,8 +444,9 @@ from Producto P
 Inner Join Comercio C ON P.idComercio = C.idComercio
 inner join TipoProducto TP ON P.idTipoProducto = TP.idTipoProducto
 where P.visible = 1;
+
 GO
-/****** Object:  StoredProcedure [dbo].[ver_tipo_productos]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[ver_tipo_productos]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -439,8 +457,9 @@ as
 select idTipoProducto, nombre
 from TipoProducto
 where visible = 1;
+
 GO
-/****** Object:  StoredProcedure [dbo].[ver_tipos_comercios]    Script Date: 26/4/2022 04:17:56 ******/
+/****** Object:  StoredProcedure [dbo].[ver_tipos_comercios]    Script Date: 26/4/2022 18:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -451,6 +470,7 @@ as
 select nombre, horaabierto, horacerrado
 from TipoComercio
 where visible = 1;
+
 GO
 USE [master]
 GO
